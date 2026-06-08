@@ -1,58 +1,158 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# YourSurprise Shopping Laravel Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel 13 application with a SQLite database and OpenAI-powered frontend integration, built with Vite and Tailwind CSS.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.3+
+- Composer
+- Node.js 18+ and npm
+- SQLite (bundled with PHP on most systems)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Installation & Setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 1. Clone the repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repository-url>
+cd <project-folder>
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Run the setup script
 
-## Contributing
+The project includes a one-command setup that installs all dependencies, copies the environment file, generates an app key, runs migrations, and builds frontend assets:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer run setup
+```
 
-## Code of Conduct
+This is equivalent to running the following steps manually:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate 
+```
 
-## Security Vulnerabilities
+### 3. Configure your environment
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Open the generated `.env` file and update any values as needed. The most important ones for local development:
 
-## License
+```env
+APP_NAME=Laravel
+APP_ENV=local
+APP_URL=http://localhost
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+DB_CONNECTION=sqlite
+DB_DATABASE=null (needs to be the absolute path to the .db)
+OPENAI_API_KEY=null (needs to be the key of the openAi API key)
+```
+
+> See the [Database section](#database-connection) below for connecting the provided `.db` file instead of the default.
+> See the [OpenAI integration](#openai-integration) below for connecting the OpenAI API to the frontend.
+
+---
+
+## Database Connection
+
+The project uses **SQLite** as its database driver. A pre-populated database file (`yoursurprise_test.db`) is provided.
+
+### Using the provided `.db` file
+
+**Step 1** — Copy the database file into the `database/` directory:
+
+```bash
+cp yoursurprise_test.db database/yoursurprise_test.db
+```
+
+**Step 2** — Update your `.env` file to point to this file using an absolute path:
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/your/project/database/yoursurprise_test.db
+```
+
+Replace `/absolute/path/to/your/project/` with the actual path to your project root. On Linux/macOS you can get this by running `pwd` inside the project folder.
+
+**Step 3** — Clear the config cache so Laravel picks up the change:
+
+```bash
+php artisan config:clear
+```
+
+**Step 4** — Verify the connection:
+
+```bash
+php artisan tinker
+> DB::connection()->getPdo();
+```
+
+If the connection is successful, you will see a `PDO` object returned without errors.
+
+> **Note:** No migrations need to be run against the provided `.db` file — it already contains the schema and seed data.
+
+---
+
+## Running the Application
+
+
+To compile frontend assets for production:
+
+```bash
+php artisan serve
+```
+
+The application will be available at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
+
+
+## Frontend Application & OpenAI Integration
+
+### Accessing the frontend
+
+Once the application is running, open your browser and navigate to:
+
+```
+http://localhost:8000
+```
+
+### Order ID lookup
+
+The main interface accepts an **Order ID** as input. Enter a numeric order ID (eg. 1) into the input field and submit the form. The application will look up the corresponding order record from the SQLite database.
+
+### OpenAI integration
+
+When an order is retrieved, the application sends the order data to the **OpenAI API** to generate an AI-powered response or summary based on the order details.
+
+To enable this feature, add your OpenAI API key to the `.env` file:
+
+```env
+OPENAI_API_KEY=sk-...
+```
+
+> You can obtain an API key from [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys).
+
+After adding the key, clear the config cache:
+
+```bash
+php artisan config:clear
+```
+
+The integration will then be active automatically when an order ID is submitted through the frontend.
+
+---
+
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Laravel 13, PHP 8.3 |
+| Database | SQLite |
+| Frontend build | Vite 8, Tailwind CSS 4 |
+| AI integration | OpenAI API |
+| Auth scaffolding | Laravel Sanctum |
