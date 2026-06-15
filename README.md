@@ -125,7 +125,9 @@ http://localhost:8000
 
 **API**
 
-The first part of the Yoursurpise assignment is to create 3 api gateways
+The first part of the Yoursurpise assignment is to create 3 api gateways.
+They can be accessed by the following links when the application is running.
+They all return a JSON.
 
 
 ```bash
@@ -137,15 +139,16 @@ http://127.0.0.1:8000/api/getcart/1
 
 **Frontend**
 
+The second part of the assignment is to make a frontend visualization.
+Which can be viewed by the default path or this link.
 
 ```bash
 http://localhost:8000
 ```
 
+**Order ID lookup**
 
-### Order ID lookup
-
-The main interface accepts an **Order ID** as input. Enter a numeric order ID (eg. 1) into the input field and submit the form. The application will look up the corresponding order record from the SQLite database.
+The main interface accepts an *Order ID* as input. Enter a numeric order ID (eg. 1) into the input field and submit the form. The application will look up the corresponding order record from the SQLite database.
 
 ### OpenAI integration
 
