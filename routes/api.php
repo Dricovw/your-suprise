@@ -5,20 +5,12 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\CartItem;
 use App\Http\Controllers\RecommendationController;
+use App\Http\Controllers\API\ProductController;
 
-Route::get('/productinfo/{id}', function ($id) {
-    $product = Product::with('categoryInfo')->findorfail($id);
-
-    return response()->json($product);
-});
+Route::get('/productinfo/{id}', [ProductController::class, 'show']);
 
 
-Route::get('/activeproductlist', function () {
-    $products = Product::with('categoryInfo')->where('active', true)->get();
-
-    return response()->json($products);
-});
-
+Route::get('/activeproductlist', [ProductController::class, 'index']);
 
 Route::get('/getcart/{cartId}', function ($cartId) {
     $cartItems = CartItem::with('ProductInfo')->where('cart_id', $cartId)->get();
@@ -28,3 +20,11 @@ Route::get('/getcart/{cartId}', function ($cartId) {
 
 Route::get('/getcart/{cartId}/recommendations', [RecommendationController::class, 'show']);
 
+
+
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/productinfo/{id}', [ProductController::class, 'show']);
+Route::post('/products', [ProductController::class, 'store']);
+Route::put('/products/{id}', [ProductController::class, 'update']);
+Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+Route::get('/products', [ProductController::class, 'index']);

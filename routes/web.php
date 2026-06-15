@@ -3,11 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/cart', fn() => view('cart'));
+Route::get('/', fn() => view('cart'));
 
 Route::get('/cart/{cartId}', [CartController::class, 'show']);
 

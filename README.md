@@ -120,6 +120,29 @@ Once the application is running, open your browser and navigate to:
 http://localhost:8000
 ```
 
+
+### Your Suprise Assignment
+
+**API**
+
+The first part of the Yoursurpise assignment is to create 3 api gateways
+
+
+```bash
+http://127.0.0.1:8000/api/productinfo/1
+http://127.0.0.1:8000/api/activeproductlist
+http://127.0.0.1:8000/api/getcart/1
+```
+
+
+**Frontend**
+
+
+```bash
+http://localhost:8000
+```
+
+
 ### Order ID lookup
 
 The main interface accepts an **Order ID** as input. Enter a numeric order ID (eg. 1) into the input field and submit the form. The application will look up the corresponding order record from the SQLite database.
